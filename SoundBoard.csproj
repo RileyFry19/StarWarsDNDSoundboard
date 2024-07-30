@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\Sounds\Sad\" />
+      <Folder Include="wwwroot\Sounds\Sneaky\" />
+      <Folder Include="wwwroot\Sounds\SpaceCombat\" />
+      <Folder Include="wwwroot\Sounds\TenseSpooky\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\Sounds\DarkSide\01.11. Frank Zappa - Would You Like a Snack_.mp3" />
+      <_ContentIncludedByDefault Remove="wwwroot\Sounds\DarkSide\01.14. Frank Zappa - She Painted Up Her Face.mp3" />
+      <_ContentIncludedByDefault Remove="wwwroot\Sounds\DarkSide\01.16. Frank Zappa - Half a Dozen Provocative Squats.mp3" />
+      <_ContentIncludedByDefault Remove="wwwroot\Sounds\DarkSide\01.18. Frank Zappa - Shove It Right In.mp3" />
+      <_ContentIncludedByDefault Remove="wwwroot\Sounds\DarkSide\02.02. Frank Zappa - Dental Hygiene Dilemma.mp3" />
+      <_ContentIncludedByDefault Remove="wwwroot\Sounds\DarkSide\02.04. Frank Zappa - Daddy, Daddy, Daddy.mp3" />
+      <_ContentIncludedByDefault Remove="wwwroot\Sounds\DarkSide\02.05. Frank Zappa - Penis Dimension.mp3" />
+      <_ContentIncludedByDefault Remove="wwwroot\Sounds\DarkSide\02.06. Frank Zappa - What Will This Evening Bring Me This Morning.mp3" />
+    </ItemGroup>
+
+</Project>

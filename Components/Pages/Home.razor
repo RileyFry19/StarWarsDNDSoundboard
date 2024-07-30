@@ -1,0 +1,37 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Sound Board</PageTitle>
+<div style="flex-direction: column" class="d-flex w-100">
+    <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Star Wars DND Soundboard</a>
+        </div>
+    </nav>
+    <div class="row pt-4 p-5 container-fluid">
+        <div class="d-grid gap-2 pt-4 p-5 w-50 align-self-center">
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?spacecombat'">Space Combat</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?combat'">Combat</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?lightsaberduel'">Lightsaber Duel</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?cues'">Cues</button>
+        </div>
+        <div class="d-grid gap-2 pt-4 p-5 w-50 align-self-center">
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?exploration'">Exploration</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?sad'">Sad</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?sneaky'">Sneaky</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?peaceful'">Peaceful</button>
+        </div>
+        <div class="d-grid gap-2 pt-4 p-5 w-50 align-self-center">
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?lightside'">Light Side</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?darkside'">Dark Side</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?theempire'">The Empire</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?confrontation'">Confrontation</button>
+        </div>
+        <div class="d-grid gap-2 pt-4 p-5 w-50 align-self-center">
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?chaseaction'">Chase Action</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?cantina'">Cantina</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?tensespooky'">Tense/Spooky</button>
+            <button class="btn btn-lg btn-primary" type="button" onclick="location.href='/MusicPlayer?misc'">Misc</button>
+        </div>
+    </div>
+</div>

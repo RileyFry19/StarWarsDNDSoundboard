@@ -1,0 +1,87 @@
+﻿@page "/MusicPlayer"
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager nav
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<PageTitle>Music Player</PageTitle>
+<div style="flex-direction: column" class="d-flex w-100">
+    <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Star Wars DND Soundboard</a>
+        </div>
+    </nav>
+    <div class="row pt-4 p-5 container-fluid">
+        @if (AudioSource.Count > 0)
+        {
+            @foreach (var file in AudioSource)
+            {
+                <div class="d-grid gap-4 pb-5 w-50 align-self-center">
+                    <button type="button" class="btn btn-primary btn-lg" @onclick="() => PlayAudio(file)">@Path.GetFileNameWithoutExtension(file)</button>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No audio files found.</p>
+        }
+    </div>
+    <div class="row p-3 w-100 position-fixed bottom-0">
+        <audio controls="controls" id="audioPlayer">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+</div>
+
+<script>
+    window.myFunctions = {
+        setAudioSource: function(sourceUrl){
+            var audioPlayer = document.getElementById('audioPlayer');
+            if (audioPlayer) {
+                audioPlayer.src = sourceUrl;
+                audioPlayer.play();
+            }
+        }
+    }
+</script>
+
+@code {
+    private List<string> AudioSource { get; set; } = new();
+    private string CurrentAudioSource { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var uri = nav.ToAbsoluteUri(nav.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+        var directory = query.FirstOrDefault().Key;
+
+        if (!string.IsNullOrEmpty(directory))
+        {
+            LoadAudioFiles(directory);
+        }
+        else
+        {
+            Console.WriteLine($"Directory {directory} does not exist.");
+        }
+    }
+
+    private void LoadAudioFiles(string directory)
+    {
+        var basePath = Path.Combine("wwwroot", "Sounds", directory);
+        if (Directory.Exists(basePath))
+        {
+            var files = Directory.GetFiles(basePath, "*.mp3");
+            AudioSource = files.Select(file => $"Sounds/{directory}/{Path.GetFileName(file)}").ToList();
+        }
+        else
+        {
+            Console.WriteLine($"Directory {basePath} does not exist.");
+        }
+    }
+
+    private async Task PlayAudio(string filePath)
+    {
+        CurrentAudioSource = filePath;
+        await JS.InvokeVoidAsync("myFunctions.setAudioSource", filePath);
+    }
+}
