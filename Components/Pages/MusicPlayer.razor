@@ -4,7 +4,7 @@
 @inject IJSRuntime JS
 @rendermode InteractiveServer
 
-<PageTitle>Music Player</PageTitle>
+<PageTitle>@Title</PageTitle>
 <div style="flex-direction: column" class="d-flex w-100">
     <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
         <div class="container-fluid">
@@ -48,12 +48,14 @@
 @code {
     private List<string> AudioSource { get; set; } = new();
     private string CurrentAudioSource { get; set; }
-
+    private string Title;
+    
     protected override void OnInitialized()
     {
         var uri = nav.ToAbsoluteUri(nav.Uri);
         var query = QueryHelpers.ParseQuery(uri.Query);
         var directory = query.FirstOrDefault().Key;
+        Title = directory;
 
         if (!string.IsNullOrEmpty(directory))
         {
