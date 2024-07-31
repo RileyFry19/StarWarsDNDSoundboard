@@ -16,7 +16,7 @@
         {
             @foreach (var file in AudioSource)
             {
-                <div class="d-grid gap-4 pb-5 w-50 align-self-center">
+                <div class="@format">
                     <button type="button" class="btn btn-primary btn-lg" @onclick="() => PlayAudio(file)">@Path.GetFileNameWithoutExtension(file)</button>
                 </div>
             }
@@ -41,6 +41,9 @@
                 audioPlayer.src = sourceUrl;
                 audioPlayer.play();
             }
+        },
+        screen: function(){
+            return window.innerWidth;
         }
     }
 </script>
@@ -49,6 +52,7 @@
     private List<string> AudioSource { get; set; } = new();
     private string CurrentAudioSource { get; set; }
     private string Title;
+    private string format;
     
     protected override void OnInitialized()
     {
@@ -85,5 +89,24 @@
     {
         CurrentAudioSource = filePath;
         await JS.InvokeVoidAsync("myFunctions.setAudioSource", filePath);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var screenWidth = await JS.InvokeAsync<int>("myFunctions.screen");
+
+            if (screenWidth >= 768)
+            {
+                format = "d-grid gap-4 pb-5 w-50 align-self-center";
+            }
+            else
+            {
+                format = "d-grid gap-2 pb-5 w-100 align-self-center";
+            }
+
+            StateHasChanged();
+        }
     }
 }
