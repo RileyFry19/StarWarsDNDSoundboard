@@ -1,5 +1,4 @@
 ﻿@page "/"
-@inject IJSRuntime JS
 @rendermode InteractiveServer
 
 <PageTitle>Sound Board</PageTitle>
@@ -11,85 +10,54 @@
     </nav>
     <div class="container-fluid pt-4">
         <div class="row">
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?spacecombat"><button class="btn btn-lg btn-primary w-100" type="button">Space Combat</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?combat"><button class="btn btn-lg btn-primary w-100" type="button">Combat</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?lightsaberduel"><button class="btn btn-lg btn-primary w-100" type="button">Lightsaber Duel</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?cues"><button class="btn btn-lg btn-primary w-100" type="button">Cues</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?exploration"><button class="btn btn-lg btn-primary w-100" type="button">Exploration</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?sad"><button class="btn btn-lg btn-primary w-100" type="button">Sad</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?sneaky"><button class="btn btn-lg btn-primary w-100" type="button">Sneaky</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?peaceful"><button class="btn btn-lg btn-primary w-100" type="button">Peaceful</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?lightside"><button class="btn btn-lg btn-primary w-100" type="button">Light Side</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?darkside"><button class="btn btn-lg btn-primary w-100" type="button">Dark Side</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?theempire"><button class="btn btn-lg btn-primary w-100" type="button">The Empire</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?confrontation"><button class="btn btn-lg btn-primary w-100" type="button">Confrontation</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?chaseaction"><button class="btn btn-lg btn-primary w-100" type="button">Chase Action</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?cantina"><button class="btn btn-lg btn-primary w-100" type="button">Cantina</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?tensespooky"><button class="btn btn-lg btn-primary w-100" type="button">Tense/Spooky</button></a>
             </div>
-            <div class="@format">
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
                 <a href="/MusicPlayer?misc"><button class="btn btn-lg btn-primary w-100" type="button">Misc</button></a>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    window.myFunctions = {
-        screen: function(){
-            return window.innerWidth;
-        }
-    }
-</script>
-
-@code {
-    private string format;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            var screenWidth = await JS.InvokeAsync<int>("myFunctions.screen");
-
-            if (screenWidth >= 768)
-            {
-                format = "col-12 col-md-6 col-lg-3 mb-4";
-            }
-            else
-            {
-                format = "col-12 mb-4";
-            }
-
-            StateHasChanged();
-        }
-    }
-}
