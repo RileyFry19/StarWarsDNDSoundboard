@@ -6,18 +6,24 @@
 
 <PageTitle>@Title</PageTitle>
 <div style="flex-direction: column" class="d-flex w-100">
-    <nav class="navbar navbar-expand-lg bg-primary fixed-top" data-bs-theme="dark">
+    <nav class="navbar navbar-expand bg-primary fixed-top" data-bs-theme="dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Star Wars DND Soundboard</a>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     @if (!string.IsNullOrEmpty(CurrentSongName))
                     {
-                    <li class="nav-item">
-                        <span class="navbar-text text-light">@CurrentSongName</span>
-                    </li>
+                        <li class="nav-item d-none d-md-inline">
+                            <span class="navbar-text text-light me-3">@CurrentSongName</span>
+                        </li>
                     }
                 </ul>
+                <button type="button" class="btn btn-primary" @onclick="() => LoopAudio()">
+                    <svg width="16" height="16" fill="currentColor" class="bi bi-repeat" viewBox="0 0 16 16">
+                        <path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z"></path>
+                    </svg>
+                    @loopMsg
+                </button>
             </div>
         </div>
     </nav>
@@ -52,6 +58,12 @@
                 audioPlayer.play();
             }
         },
+        loopAudio: function(loop){
+            var audioPlayer = document.getElementById('audioPlayer');
+            if (audioPlayer) {
+                audioPlayer.loop = loop;
+            }
+        },
         screenSize: function(){
             return window.innerWidth;
         }
@@ -64,6 +76,8 @@
     private string CurrentSongName { get; set; }
     private string Title;
     private string Format;
+    private bool Loop;
+    private string loopMsg = "Off";
     
     protected override void OnInitialized()
     {
@@ -102,11 +116,19 @@
         await JS.InvokeVoidAsync("myFunctions.setAudioSource", filePath);
     }
 
+    private async Task LoopAudio()
+    {
+        Loop = !Loop;
+        loopMsg = Loop ? "On" : "Off";
+        await JS.InvokeVoidAsync("myFunctions.loopAudio", Loop);
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(firstRender)
         {
-            Format = await JS.InvokeAsync<int>("myFunctions.screenSize") >= 768 ? "d-grid gap-4 pb-5 w-50 align-self-center" : "d-grid gap-2 pb-5 w-100 align-self-center";
+            Format = await JS.InvokeAsync<int>("myFunctions.screenSize") >= 770 ? "d-grid gap-4 pb-5 w-50 align-self-center" : "d-grid gap-2 pb-5 w-100 align-self-center";
+            await JS.InvokeVoidAsync("myFunctions.loopAudio", Loop = false);
             StateHasChanged();
         }
     }
