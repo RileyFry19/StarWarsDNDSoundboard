@@ -5,50 +5,13 @@
 @rendermode InteractiveServer
 
 <PageTitle>@Title</PageTitle>
-<div style="flex-direction: column" class="d-flex w-100">
-    <nav class="navbar navbar-expand bg-primary fixed-top" data-bs-theme="dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Star Wars DND Soundboard</a>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    @if (!string.IsNullOrEmpty(CurrentSongName))
-                    {
-                        <li class="nav-item d-none d-md-inline">
-                            <span class="navbar-text text-light me-3">@CurrentSongName</span>
-                        </li>
-                    }
-                </ul>
-                <button type="button" class="btn btn-primary" @onclick="() => LoopAudio()">
-                    <svg width="16" height="16" fill="currentColor" class="bi bi-repeat" viewBox="0 0 16 16">
-                        <path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z"></path>
-                    </svg>
-                    @loopMsg
-                </button>
-            </div>
-        </div>
-    </nav>
-    <div class="row pt-4 p-5 container-fluid" style="margin-top: 80px;">
-        @if (AudioSource.Count > 0)
-        {
-            @foreach (var file in AudioSource)
-            {
-                <div class="@Format">
-                    <button type="button" class="btn btn-primary btn-lg" @onclick="() => PlayAudio(file)">@Path.GetFileNameWithoutExtension(file)</button>
-                </div>
-            }
-        }
-        else
-        {
-            <p>No audio files found.</p>
-        }
-    </div>
-    <div class="row p-3 w-100 position-fixed bottom-0">
-        <audio controls="controls" id="audioPlayer">
-            Your browser does not support the audio element.
-        </audio>
-    </div>
-</div>
-
+@if(!Desktop){
+    <MobileLayout></MobileLayout>
+}
+else
+{
+    <DesktopLayout></DesktopLayout>
+}
 <script>
     window.myFunctions = {
         setAudioSource: function(sourceUrl){
@@ -66,20 +29,42 @@
         },
         screenSize: function(){
             return window.innerWidth;
+        },
+        closeNav: function(){
+            document.addEventListener('click', function (event) {
+                var navbar = document.getElementById("navbarToggleLinks");
+                var toggler = document.getElementById("navbarToggler");
+
+                if (!navbar.contains(event.target) && !toggler.contains(event.target)) {
+                    $(navbar).collapse('hide');
+                }
+            });
         }
-    }    
+    }
 </script>
 
 @code {
-    private List<string> AudioSource { get; set; } = new();
-    private string CurrentAudioSource { get; set; }
-    private string CurrentSongName { get; set; }
-    private string Title;
-    private string Format;
-    private bool Loop;
-    private string loopMsg = "Off";
-    
+    public List<string> AudioSource { get; set; } = new();
+    public string CurrentAudioSource { get; set; }
+    public string CurrentSongName { get; set; }
+    public string Title;
+    public bool Loop = false;
+    public string loopMsg = "Off";
+    public bool Desktop;
+
     protected override void OnInitialized()
+    {
+        LoadAudioDirectory();
+        nav.LocationChanged += uriChange;
+    }
+
+    private void uriChange(object sender, LocationChangedEventArgs e)
+    {
+        LoadAudioDirectory();
+        StateHasChanged();
+    }
+
+    private void LoadAudioDirectory()
     {
         var uri = nav.ToAbsoluteUri(nav.Uri);
         var query = QueryHelpers.ParseQuery(uri.Query);
@@ -96,7 +81,17 @@
         }
     }
 
-    private void LoadAudioFiles(string directory)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Desktop = await JS.InvokeAsync<int>("myFunctions.screenSize") >= 770;
+            StateHasChanged();
+        }
+        await JS.InvokeVoidAsync("myFunctions.closeNav");
+    }
+
+    public void LoadAudioFiles(string directory)
     {
         var basePath = Path.Combine("wwwroot", "Sounds", directory);
         if (Directory.Exists(basePath))
@@ -109,27 +104,17 @@
         }
     }
 
-    private async Task PlayAudio(string filePath)
+    public async Task PlayAudio(string filePath)
     {
         CurrentAudioSource = filePath;
         CurrentSongName = Path.GetFileNameWithoutExtension(filePath);
         await JS.InvokeVoidAsync("myFunctions.setAudioSource", filePath);
     }
 
-    private async Task LoopAudio()
+    public async Task LoopAudio()
     {
         Loop = !Loop;
         loopMsg = Loop ? "On" : "Off";
         await JS.InvokeVoidAsync("myFunctions.loopAudio", Loop);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(firstRender)
-        {
-            Format = await JS.InvokeAsync<int>("myFunctions.screenSize") >= 770 ? "d-grid gap-4 pb-5 w-50 align-self-center" : "d-grid gap-2 pb-5 w-100 align-self-center";
-            await JS.InvokeVoidAsync("myFunctions.loopAudio", Loop = false);
-            StateHasChanged();
-        }
     }
 }

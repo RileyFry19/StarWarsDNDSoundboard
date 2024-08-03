@@ -3,61 +3,19 @@
 
 <PageTitle>Sound Board</PageTitle>
 <div class="d-flex flex-column w-100">
-    <nav class="navbar navbar-expand-lg bg-primary fixed-top" data-bs-theme="dark">
+    <nav class="navbar bg-primary fixed-top" data-bs-theme="dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Star Wars DND Soundboard</a>
         </div>
     </nav>
     <div class="container-fluid pt-4">
         <div class="row" style="margin-top: 60px;">
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?spacecombat"><button class="btn btn-lg btn-primary w-100" type="button">Space Combat</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?combat"><button class="btn btn-lg btn-primary w-100" type="button">Combat</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?lightsaberduel"><button class="btn btn-lg btn-primary w-100" type="button">Lightsaber Duel</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?cues"><button class="btn btn-lg btn-primary w-100" type="button">Cues</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?exploration"><button class="btn btn-lg btn-primary w-100" type="button">Exploration</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?sad"><button class="btn btn-lg btn-primary w-100" type="button">Sad</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?sneaky"><button class="btn btn-lg btn-primary w-100" type="button">Sneaky</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?peaceful"><button class="btn btn-lg btn-primary w-100" type="button">Peaceful</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?lightside"><button class="btn btn-lg btn-primary w-100" type="button">Light Side</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?darkside"><button class="btn btn-lg btn-primary w-100" type="button">Dark Side</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?theempire"><button class="btn btn-lg btn-primary w-100" type="button">The Empire</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?confrontation"><button class="btn btn-lg btn-primary w-100" type="button">Confrontation</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?chaseaction"><button class="btn btn-lg btn-primary w-100" type="button">Chase Action</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?cantina"><button class="btn btn-lg btn-primary w-100" type="button">Cantina</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?tensespooky"><button class="btn btn-lg btn-primary w-100" type="button">Tense/Spooky</button></a>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 mb-4">
-                <a href="/MusicPlayer?misc"><button class="btn btn-lg btn-primary w-100" type="button">Misc</button></a>
-            </div>
+            @foreach (var query in Enum.GetValues(typeof(Enums.Queries)).Cast<Enums.Queries>())
+            {
+                <div class="col-12 col-md-6 col-lg-3 mb-4">
+                    <a href="/MusicPlayer?@query"><button class="btn btn-lg btn-primary w-100" type="button">@Enums.FormatQueries(query.ToString())</button></a>
+                </div>
+            }
         </div>
     </div>
 </div>
