@@ -4,14 +4,78 @@
 @inject IJSRuntime JS
 @rendermode InteractiveServer
 
-<PageTitle>@Title</PageTitle>
-@if(!Desktop){
-    <MobileLayout></MobileLayout>
-}
-else
-{
-    <DesktopLayout></DesktopLayout>
-}
+<PageTitle>@Enums.FormatDirectories(Title)</PageTitle>
+<nav class="navbar bg-primary fixed-top" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Star Wars DND Soundboard</a>
+        <button class="navbar-toggler d-none d-lg-block" id="navbarToggler" type="button" data-toggle="collapse" data-target="#navbarToggleLinks" aria-controls="navbarToggleLinks" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <button class="btn btn-primary d-lg-none" type="button" @onclick="() => LoopAudio()">
+            <svg class="bi bi-repeat" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z"></path>
+            </svg>
+            @loopMsg
+        </button>
+    </div>
+    <div class="collapse" id="navbarToggleLinks">
+        <nav class="navbar bg-primary" data-bs-theme="dark">
+            <div class="container-fluid">
+                @foreach (var query in Enum.GetValues(typeof(Enums.Queries)).Cast<Enums.Queries>())
+                {
+                    <a class="nav-item nav-link" href="/MusicPlayer?@query">@Enums.FormatDirectories(query.ToString())</a>
+                }
+            </div>
+        </nav>
+    </div>
+</nav>
+<div class="row pt-4 p-5 container-fluid" style="margin-top: 60px;">
+    @if (AudioSource.Count > 0)
+    {
+        @foreach (var file in AudioSource)
+        {
+            <div class="d-none d-lg-grid gap-4 pb-4 w-50 align-self-center">
+                <button class="btn btn-primary btn-lg" type="button" @onclick="() => PlayAudio(file)">@Path.GetFileNameWithoutExtension(file)</button>
+            </div>
+            <div class="d-lg-none d-grid gap-2 pb-4 w-100 align-self-center">
+                <button class="btn btn-primary btn-lg" type="button" @onclick="() => PlayAudio(file)">@Path.GetFileNameWithoutExtension(file)</button>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No audio files found.</p>
+    }
+</div>
+<div class="col w-100 position-fixed bottom-0 d-flex">
+    @if(Desktop)
+    {
+        <audio class="w-50 pb-2 ms-4" controls="controls" id="audioPlayer">
+            Your browser does not support the audio element.
+        </audio>
+    }
+    else
+    {
+        <audio class="w-100 pb-2 ms-2 me-2" controls="controls" id="audioPlayer">
+            Your browser does not support the audio element.
+        </audio>
+    }
+    <h2 class="mx-3 d-none d-lg-flex">
+        <button class="btn btn-primary" type="button" @onclick="() => LoopAudio()">
+            <svg class="bi bi-repeat" width="16" height="16" fill="currentColor">
+                <path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z"></path>
+            </svg>
+            @loopMsg
+        </button>
+    </h2>
+    @if (!string.IsNullOrEmpty(CurrentSongName))
+    {
+        <h2 class="navbar navbar-brand bg-primary d-none d-lg-flex" data-bs-theme="dark">
+            <span class="text-light">Playing: @CurrentSongName</span>
+        </h2>
+    }
+</div>
+
 <script>
     window.myFunctions = {
         setAudioSource: function(sourceUrl){
@@ -35,8 +99,10 @@ else
                 var navbar = document.getElementById("navbarToggleLinks");
                 var toggler = document.getElementById("navbarToggler");
 
-                if (!navbar.contains(event.target) && !toggler.contains(event.target)) {
-                    $(navbar).collapse('hide');
+                if (navbar && toggler){
+                    if (!navbar.contains(event.target) && !toggler.contains(event.target)) {
+                        $(navbar).collapse('hide');
+                    }
                 }
             });
         }
@@ -51,14 +117,14 @@ else
     public bool Loop = false;
     public string loopMsg = "Off";
     public bool Desktop;
-
+    
     protected override void OnInitialized()
     {
         LoadAudioDirectory();
-        nav.LocationChanged += uriChange;
+        nav.LocationChanged += UriChange;
     }
 
-    private void uriChange(object sender, LocationChangedEventArgs e)
+    private void UriChange(object sender, LocationChangedEventArgs e)
     {
         LoadAudioDirectory();
         StateHasChanged();
@@ -75,17 +141,13 @@ else
         {
             LoadAudioFiles(directory);
         }
-        else
-        {
-            Console.WriteLine($"Directory {directory} does not exist.");
-        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            Desktop = await JS.InvokeAsync<int>("myFunctions.screenSize") >= 770;
+            Desktop = await JS.InvokeAsync<int>("myFunctions.screenSize") >= 992;
             StateHasChanged();
         }
         await JS.InvokeVoidAsync("myFunctions.closeNav");

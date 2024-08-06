@@ -2,20 +2,18 @@
 @rendermode InteractiveServer
 
 <PageTitle>Sound Board</PageTitle>
-<div class="d-flex flex-column w-100">
-    <nav class="navbar bg-primary fixed-top" data-bs-theme="dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Star Wars DND Soundboard</a>
-        </div>
-    </nav>
-    <div class="container-fluid pt-4">
-        <div class="row" style="margin-top: 60px;">
-            @foreach (var query in Enum.GetValues(typeof(Enums.Queries)).Cast<Enums.Queries>())
-            {
-                <div class="col-12 col-md-6 col-lg-3 mb-4">
-                    <a href="/MusicPlayer?@query"><button class="btn btn-lg btn-primary w-100" type="button">@Enums.FormatQueries(query.ToString())</button></a>
-                </div>
-            }
-        </div>
+<nav class="navbar bg-primary fixed-top" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Star Wars DND Soundboard</a>
+    </div>
+</nav>
+<div class="container-fluid pt-4">
+    <div class="row" style="margin-top: 60px;">
+        @foreach (var query in Enum.GetValues(typeof(Enums.Queries)).Cast<Enums.Queries>())
+        {
+            <div class="col-12 col-md-6 col-lg-3 mb-4">
+                <a href="/MusicPlayer?@query"><button class="btn btn-lg btn-primary w-100" type="button">@Enums.FormatDirectories(query.ToString())</button></a>
+            </div>
+        }
     </div>
 </div>

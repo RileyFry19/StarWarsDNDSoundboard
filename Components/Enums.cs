@@ -1,4 +1,6 @@
-﻿@code{
+﻿namespace SoundBoard.Components;
+public class Enums
+{
     public enum Queries
     {
         SpaceCombat,
@@ -19,7 +21,7 @@
         Misc
     }
     
-    public static string FormatQueries(string value)
+    public static string FormatDirectories(string value)
     {
         return string.Concat(value.Select((x, i) => i > 0 && char.IsUpper(x) ? " " + x : x.ToString()));
     }
