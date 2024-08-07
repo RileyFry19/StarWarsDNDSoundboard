@@ -1,10 +1,16 @@
 ﻿@page "/"
 @rendermode InteractiveServer
+@inject NavigationManager nav
 
 <PageTitle>Sound Board</PageTitle>
 <nav class="navbar bg-primary fixed-top" data-bs-theme="dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Star Wars DND Soundboard</a>
+        <form class="d-none d-lg-flex" @onsubmit="SearchSong">
+            <a class="navbar-brand">Search for Clip:</a>
+            <input class="form-control bg-opacity-75 bg-secondary" style="color: white;" type="search" data-bs-theme="dark" @bind="search">
+            <button class="btn btn-primary ms-3" type="submit">Search</button>
+        </form>
     </div>
 </nav>
 <div class="container-fluid pt-4">
@@ -17,3 +23,25 @@
         }
     </div>
 </div>
+
+@code{
+    string search;
+    
+    public async Task SearchSong()
+    {
+        DirectoryInfo dir = new DirectoryInfo(Path.Combine("wwwroot", "Sounds"));
+        var fileList = dir.GetFiles("*.mp3", SearchOption.AllDirectories);
+
+        var fileQuery = from file in fileList
+            where file.Name.Contains(search, StringComparison.OrdinalIgnoreCase)
+            select file;
+
+        var foundFile = fileQuery.FirstOrDefault();
+        if (foundFile != null)
+        {
+            var directoryName = Path.GetFileName(Path.GetDirectoryName(foundFile.FullName));
+            var fileName = Path.GetFileNameWithoutExtension(foundFile.Name);
+            nav.NavigateTo($"/MusicPlayer?{directoryName}#{fileName}");
+        }
+    }
+}
